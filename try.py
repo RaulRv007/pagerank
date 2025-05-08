@@ -1,4 +1,4 @@
-from pagerank import transition_model, crawl
+from pagerank import transition_model, crawl, sample_pagerank
 import sys
 
 DAMPING = 0.85
@@ -13,4 +13,5 @@ corpus = crawl(sys.argv[1])
 
 
 print(corpus)
-print(transition_model(corpus, 'ai.html', DAMPING))
+print(transition_model(corpus, '1.html', DAMPING))
+print(sample_pagerank(corpus, DAMPING, SAMPLES))

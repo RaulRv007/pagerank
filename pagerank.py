@@ -4,6 +4,7 @@ import re
 import sys
 import numpy as np
 import pandas as pd
+from collections import Counter
 
 DAMPING = 0.85
 SAMPLES = 10000
@@ -66,11 +67,6 @@ def transition_model(corpus, page, damping_factor):
         for link in corpus[page]:
             if link == i:
                 model[i] += damping_factor/len(corpus[page])
-
-
-            
-                
-    
     return model
 
 
@@ -83,7 +79,25 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+    samples = []
+    page = random.choice(list(corpus))
+    for i in range(n):
+        model = transition_model(corpus, page, damping_factor)
+        new_page = random.choices(list(corpus), list(model.values()))[0]
+        samples.append(new_page)
+        page = new_page
+
+    chain = Counter(samples)
+    chain = dict(chain)
+
+
+    for link, count in chain.items():
+        chain[link] = count/n
+    
+    chain = dict(sorted(chain.items(), key=lambda item: item[1], reverse=True))
+
+    return chain
+
 
 
 def iterate_pagerank(corpus, damping_factor):
