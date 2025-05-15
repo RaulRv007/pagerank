@@ -90,9 +90,7 @@ def sample_pagerank(corpus, damping_factor, n):
     chain = Counter(samples)
     chain = dict(chain)
 
-
-    for link, count in chain.items():
-        chain[link] = count/n
+    chain = dict(map(lambda item: (item[0], item[1]/n), chain.items()))
     
     chain = dict(sorted(chain.items(), key=lambda item: item[1], reverse=True))
 
@@ -109,7 +107,23 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+    ranks = {}
+    N = len(corpus)
+    for page, links in corpus.items():
+        last_rank = 0
+        rank = (1-damping_factor)/N
+        while abs(last_rank - rank) >= 0.001:
+            last_rank = rank
+            rank = (rank/len(links))*damping_factor
+
+        ranks[page] = rank
+
+    total = sum(ranks.values())
+    for page in ranks:
+        ranks[page] /= total
+        
+
+    return ranks
 
 
 if __name__ == "__main__":
